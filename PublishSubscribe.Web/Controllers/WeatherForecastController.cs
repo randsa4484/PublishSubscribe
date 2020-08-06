@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using PublishSubscribe.Core;
+using PublishSubscribe.Messages;
 using PublishSubscribe.Web;
 
 namespace ServiceBusFacade.Web.Controllers
@@ -16,18 +18,18 @@ namespace ServiceBusFacade.Web.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
-        //private readonly IMessagePublisher _messagePublisher;
+        private readonly IMessagePublisher _messagePublisher;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IMessagePublisher messagePublisher)
         {
             _logger = logger;
-            //_messagePublisher = messagePublisher;
+            _messagePublisher = messagePublisher;
         }
 
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-         //   _messagePublisher.Publish(new WeatherForecastsRequestedMessage());
+            _messagePublisher.Publish(new WeatherForecastsRequestedMessage());
 
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
